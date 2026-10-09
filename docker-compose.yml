@@ -1,0 +1,21 @@
+
+services:
+  amazon-api:
+    build: .
+    container_name: amazon_backend_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./amazon.db:/app/amazon.db
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/reverse_proxy.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - amazon-api
+    restart: unless-stopped
